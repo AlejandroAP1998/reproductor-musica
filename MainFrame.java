@@ -1,7 +1,13 @@
 import java.awt.event.*;
 import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
+import javafx.embed.swing.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.net.URI;
 
 public class MainFrame extends JFrame implements ActionListener {
 
@@ -12,6 +18,17 @@ public class MainFrame extends JFrame implements ActionListener {
     JButton previous;
     JButton openSong;
     JButton openList;
+    boolean playing;
+    File file;
+    Media song;
+    MediaPlayer songPlayer;
+    boolean songLoaded;
+    Clip clip;
+    long position = 0;
+
+    static{
+        JFXPanel fxPanel = new JFXPanel();
+    }
 
     private static ImageIcon resizeIcon(ImageIcon icon, int resizedWidth, int resizedHeight) {
         Image img = icon.getImage();  
@@ -123,13 +140,23 @@ public class MainFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // Actions to perform when each button gets pressed.
         if(e.getSource() == play){
+            if (songLoaded && !playing) {
+                songPlayer.play();
+                playing = true;
+            }
 
         }
         else if(e.getSource() == pause){
-            
+            if (songLoaded && playing) {
+                songPlayer.pause();
+                playing = false;
+            }
         }
         else if(e.getSource() == stop){
-            
+            if (songLoaded) {
+                songPlayer.stop();
+                playing = false;
+            }
         }
         else if(e.getSource() == next){
             
@@ -137,10 +164,25 @@ public class MainFrame extends JFrame implements ActionListener {
         else if(e.getSource() == previous){
             
         }
-        else if(e.getSource() == previous){
-            
+        else if(e.getSource() == openSong){
+            JFileChooser fileChooser = new JFileChooser();
+            int resp = fileChooser.showOpenDialog(null);
+
+            if (resp == fileChooser.APPROVE_OPTION) {
+                String path = fileChooser.getSelectedFile().getAbsolutePath();
+                file = new File(path);
+                URI uri = file.toURI();
+                try {
+                    song = new Media(uri.toString());
+                    songPlayer = new MediaPlayer(song);
+                    songLoaded = true;
+                } catch (Exception e1) {
+                    System.out.println(e1);
+                    System.out.println(uri);
+                }
+            }
         }
-        else if(e.getSource() == previous){
+        else if(e.getSource() == openList){
             
         }
     }
