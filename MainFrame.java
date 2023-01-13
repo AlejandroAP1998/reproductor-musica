@@ -8,6 +8,7 @@ import javafx.embed.swing.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.net.URI;
+import java.util.ArrayList;
 
 public class MainFrame extends JFrame implements ActionListener {
 
@@ -18,16 +19,18 @@ public class MainFrame extends JFrame implements ActionListener {
     JButton previous;
     JButton openSong;
     JButton openList;
+    JButton addToList;
+    JButton saveList;
     boolean playing;
     File file;
     Media song;
     MediaPlayer songPlayer;
     boolean songLoaded;
     Clip clip;
-    long position = 0;
+    ArrayList<String> playlist;
 
     static{
-        JFXPanel fxPanel = new JFXPanel();
+        new JFXPanel();
     }
 
     private static ImageIcon resizeIcon(ImageIcon icon, int resizedWidth, int resizedHeight) {
@@ -37,8 +40,8 @@ public class MainFrame extends JFrame implements ActionListener {
     }
 
     MainFrame() {
-        this.setDefaultCloseOperation(this.EXIT_ON_CLOSE);
-        this.setSize(740,160);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(1000,160);
 
         // Initialize buttons and add listeners
         play = new JButton();
@@ -48,6 +51,8 @@ public class MainFrame extends JFrame implements ActionListener {
         previous = new JButton();
         openSong = new JButton("open song");
         openList = new JButton("open list");
+        addToList = new JButton("add to list");
+        saveList = new JButton("save list");
 
         play.addActionListener(this);
         pause.addActionListener(this);
@@ -103,31 +108,39 @@ public class MainFrame extends JFrame implements ActionListener {
         }
 
         // Place each button inside the JFrame
-        previous.setBounds(0*(spaceBetweenButton+buttonDim), 0, buttonDim, buttonDim);
+        previous.setBounds(spaceBetweenButton + 0*(spaceBetweenButton+buttonDim), 0, buttonDim, buttonDim);
         previous.setFocusable(false);
         this.add(previous);
 
-        stop.setBounds(1*(spaceBetweenButton+buttonDim), 0, buttonDim, buttonDim);
+        stop.setBounds(spaceBetweenButton + 1*(spaceBetweenButton+buttonDim), 0, buttonDim, buttonDim);
         stop.setFocusable(false);
         this.add(stop);
 
-        pause.setBounds(2*(spaceBetweenButton+buttonDim), 0, buttonDim, buttonDim);
+        pause.setBounds(spaceBetweenButton + 2*(spaceBetweenButton+buttonDim), 0, buttonDim, buttonDim);
         pause.setFocusable(false);
         this.add(pause);
 
-        play.setBounds(3*(spaceBetweenButton+buttonDim), 0, buttonDim, buttonDim);
+        play.setBounds(spaceBetweenButton + 3*(spaceBetweenButton+buttonDim), 0, buttonDim, buttonDim);
         play.setFocusable(false);
         this.add(play);
 
-        next.setBounds(4*(spaceBetweenButton+buttonDim), 0, buttonDim, buttonDim);
+        next.setBounds(spaceBetweenButton + 4*(spaceBetweenButton+buttonDim), 0, buttonDim, buttonDim);
         next.setFocusable(false);
         this.add(next);
 
-        openSong.setBounds(5*(spaceBetweenButton+buttonDim), 0, buttonWidth, buttonDim);
+        openSong.setBounds(spaceBetweenButton + 5*(spaceBetweenButton+buttonDim), 0, buttonWidth, buttonDim);
         openSong.setFocusable(false);
         this.add(openSong);
 
-        openList.setBounds(5*(spaceBetweenButton+buttonDim)+spaceBetweenButton+buttonWidth, 0, buttonWidth, buttonDim);
+        addToList.setBounds(spaceBetweenButton + 5*(spaceBetweenButton+buttonDim)+1*(spaceBetweenButton+buttonWidth), 0, buttonWidth, buttonDim);
+        addToList.setFocusable(false);
+        this.add(addToList);
+
+        saveList.setBounds(spaceBetweenButton + 5*(spaceBetweenButton+buttonDim)+2*(spaceBetweenButton+buttonWidth), 0, buttonWidth, buttonDim);
+        saveList.setFocusable(false);
+        this.add(saveList);
+
+        openList.setBounds(spaceBetweenButton + 5*(spaceBetweenButton+buttonDim)+3*(spaceBetweenButton+buttonWidth), 0, buttonWidth, buttonDim);
         openList.setFocusable(false);
         this.add(openList);
 
@@ -168,7 +181,7 @@ public class MainFrame extends JFrame implements ActionListener {
             JFileChooser fileChooser = new JFileChooser();
             int resp = fileChooser.showOpenDialog(null);
 
-            if (resp == fileChooser.APPROVE_OPTION) {
+            if (resp == JFileChooser.APPROVE_OPTION) {
                 String path = fileChooser.getSelectedFile().getAbsolutePath();
                 file = new File(path);
                 URI uri = file.toURI();
@@ -178,7 +191,6 @@ public class MainFrame extends JFrame implements ActionListener {
                     songLoaded = true;
                 } catch (Exception e1) {
                     System.out.println(e1);
-                    System.out.println(uri);
                 }
             }
         }
